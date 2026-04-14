@@ -1,0 +1,32 @@
+- name: Install K3s
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Install K3s
+      shell: curl -sfL https://get.k3s.io | sh -
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: Wait for K3s to be ready
+      shell: k3s kubectl get nodes
+      register: result
+      retries: 10
+      delay: 10
+      until: result.rc == 0
+
+    - name: Create kube config directory
+      file:
+        path: "/home/{{ ansible_user }}/.kube"
+        state: directory
+        owner: "{{ ansible_user }}"
+        mode: '0755'
+
+    - name: Copy kubeconfig
+      copy:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: "/home/{{ ansible_user }}/.kube/config"
+        remote_src: yes
+        owner: "{{ ansible_user }}"
+        mode: '0600'
