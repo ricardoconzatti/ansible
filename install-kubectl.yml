@@ -23,3 +23,9 @@
       community.general.snap:
         name: kubectl
         classic: yes
+
+    - name: Install dependencies (nfs-common)
+      apt:
+        name: nfs-common
+        state: present
+        update_cache: yes
