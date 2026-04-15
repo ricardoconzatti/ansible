@@ -24,7 +24,10 @@
         --namespace longhorn-system
         --create-namespace
         --version "{{ longhornVersion }}"
-      args:
-        creates: /var/lib/rancher/k3s/server/manifests/longhorn.yaml
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Wait for Longhorn pods to be ready
+      shell: kubectl wait --for=condition=ready pod --all -n longhorn-system --timeout=300s
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
