@@ -31,7 +31,7 @@
             definition:
               spec:
                 rules:
-                  - host: {{ homerdemo_host }}
+                  - host: "{{ homerdemo_host }}"
 
     - name: Show Homer demo URL
       debug:
