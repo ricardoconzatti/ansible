@@ -4,6 +4,7 @@
 
   vars:
     kubeconfig: /etc/rancher/k3s/k3s.yaml
+    homerdemo_host: "homer-{{ inventory_hostname.split('.')[-1] }}.caverna.local"
 
   tasks:
 
@@ -30,4 +31,8 @@
             definition:
               spec:
                 rules:
-                  - host: novo-host.seudominio.com
+                  - host: {{ homerdemo_host }}
+
+    - name: Show Homer demo URL
+      debug:
+        msg: "Homer demo URL: http://{{ homerdemo_host }}"
