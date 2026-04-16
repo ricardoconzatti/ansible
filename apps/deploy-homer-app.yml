@@ -16,3 +16,18 @@
       shell: kubectl apply -f https://raw.githubusercontent.com/ricardoconzatti/demo/refs/heads/main/homer-demo/Kubernetes/homer-demo-ingress.yaml
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Change ingress hostname
+      hosts: localhost
+      gather_facts: false
+      tasks:
+        - name: Patch ingress host
+          kubernetes.core.k8s:
+            state: patched
+            kind: Ingress
+            namespace: homer-demo
+            name: homer-demo-ingress
+            definition:
+              spec:
+                rules:
+                  - host: novo-host.seudominio.com
