@@ -8,16 +8,6 @@
 
   tasks:
 
-    - name: Install dependencies (nfs-common)
-      apt:
-        name: nfs-common
-        state: present
-        update_cache: yes
-      retries: 5
-      delay: 10
-      register: result
-      until: result is succeeded
-
     - name: Install K3s
       shell: curl -sfL https://get.k3s.io | sh -
       environment:
