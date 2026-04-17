@@ -8,11 +8,12 @@
     minio_access_key: "{{ lookup('env', 'minio_access_key') }}"
     minio_secret_key: "{{ lookup('env', 'minio_secret_key') }}"
 
-    bucket_name: "veeam-kasten-lab-01"
+    name: "semaphore-lab-kasten-{{ inventory_hostname.split('.')[-1] }}"
+    bucket_name: "{{ name }}"
     region: "sp-conza-1"
 
     user_name: "veeam.kasten"
-    user_password: "cnzTT@22"
+    user_password: "vee@m123"
 
     policy_name: "veeam-kasten-policy"
     policy_file: "/tmp/veeam-kasten-policy.json"
