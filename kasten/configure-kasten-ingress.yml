@@ -1,0 +1,40 @@
+- name: Configure Kasten Ingress
+  hosts: all
+  become: yes
+
+  vars:
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+    kasten_host: "kasten-{{ inventory_hostname.split('.')[-1] }}.caverna.local"
+
+  tasks:
+
+    - name: Create Kasten ingress
+      shell: |
+        cat <<EOF | kubectl apply -f -
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: kasten-traefik-ingress
+          namespace: kasten-io
+          annotations:
+            traefik.ingress.kubernetes.io/router.entrypoints: web
+        spec:
+          ingressClassName: traefik
+          rules:
+          - host: {{ kasten_host }}
+            http:
+              paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: gateway
+                    port:
+                      number: 80
+        EOF
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Show Kasten URL
+      debug:
+        msg: "Kasten URL: http://{{ kasten_host }}"
