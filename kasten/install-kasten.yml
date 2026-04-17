@@ -1,4 +1,4 @@
-- name: Install Kasten K10
+- name: Install Veeam Kasten
   hosts: all
   become: yes
 
