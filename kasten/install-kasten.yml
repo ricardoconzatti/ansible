@@ -29,6 +29,6 @@
         KUBECONFIG: "{{ kubeconfig }}"
 
     - name: Wait for Kasten pods to be ready
-      shell: kubectl wait --for=condition=ready pod --all -n kasten-io --timeout=300s
+      shell: kubectl wait --for=condition=ready pod --all -n kasten-io --timeout=600s
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
