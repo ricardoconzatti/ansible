@@ -1,0 +1,92 @@
+- name: Configure MinIO Bucket (for Kasten)
+  hosts: all
+  become: yes
+
+  vars:
+    minio_alias: minio
+    minio_url: "https://minio.caverna.local:9000"
+    minio_access_key: "{{ lookup('env', 'minio_access_key') }}"
+    minio_secret_key: "{{ lookup('env', 'minio_secret_key') }}"
+
+    bucket_name: "veeam-kasten-lab-01"
+    region: "sp-conza-1"
+
+    user_name: "veeam.kasten"
+    user_password: "cnzTT@22"
+
+    policy_name: "veeam-kasten-policy"
+    policy_file: "/tmp/veeam-kasten-policy.json"
+
+  tasks:
+
+    - name: Set MinIO alias
+      shell: >
+        mc alias set {{ minio_alias }} {{ minio_url }}
+        {{ minio_access_key }} {{ minio_secret_key }} --insecure
+      register: alias_result
+      changed_when: "'Added' in alias_result.stdout or 'Updated' in alias_result.stdout"
+
+    - name: Set MinIO region
+      shell: >
+        mc admin config set {{ minio_alias }} region name={{ region }} --insecure
+      ignore_errors: true
+
+    - name: Create bucket (with versioning + lock)
+      shell: >
+        mc mb {{ minio_alias }}/{{ bucket_name }}
+        --with-lock --with-versioning --region {{ region }} --insecure
+      register: bucket_result
+      failed_when: false
+      changed_when: "'created' in bucket_result.stdout"
+
+    - name: Create MinIO user
+      shell: >
+        mc admin user add {{ minio_alias }} {{ user_name }} {{ user_password }} --insecure
+      register: user_result
+      failed_when: false
+      changed_when: "'Added user' in user_result.stdout"
+
+    - name: Copy policy file
+      copy:
+        src: veeam-kasten-policy.json
+        dest: "{{ policy_file }}"
+
+    - name: Create policy
+      shell: >
+        mc admin policy create {{ minio_alias }} {{ policy_name }} {{ policy_file }} --insecure
+      register: policy_result
+      failed_when: false
+      changed_when: "'Created policy' in policy_result.stdout"
+
+    - name: Attach policy to user
+      shell: >
+        mc admin policy attach {{ minio_alias }} {{ policy_name }}
+        --user {{ user_name }} --insecure
+      register: attach_result
+      failed_when: false
+
+    - name: Set retention (COMPLIANCE 1d)
+      shell: >
+        mc retention set --default COMPLIANCE 1d
+        {{ minio_alias }}/{{ bucket_name }} --insecure
+      register: retention_result
+      failed_when: false
+
+    - name: Show retention info
+      shell: >
+        mc retention info {{ minio_alias }}/{{ bucket_name }} --insecure
+      register: retention_info
+
+    - name: Show versioning info
+      shell: >
+        mc version info {{ minio_alias }}/{{ bucket_name }} --insecure
+      register: version_info
+
+    - name: Debug output
+      debug:
+        msg:
+          - "Bucket: {{ bucket_name }}"
+          - "User: {{ user_name }}"
+          - "Region: {{ region }}"
+          - "Retention: {{ retention_info.stdout }}"
+          - "Versioning: {{ version_info.stdout }}"
