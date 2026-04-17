@@ -4,7 +4,8 @@
 
   vars:
     kubeconfig: /etc/rancher/k3s/k3s.yaml
-    longhorn_host: "longhorn-{{ inventory_hostname.split('.')[-1] }}.caverna.local"
+    domain: "caverna.local"
+    longhorn_host: "longhorn-{{ inventory_hostname.split('.')[-1] }}.{{ domain }}"
 
   tasks:
 
