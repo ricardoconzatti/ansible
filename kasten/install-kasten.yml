@@ -11,17 +11,19 @@
       shell: helm repo add kasten https://charts.kasten.io/
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+      ignore_errors: true
 
     - name: Update Helm repos
       shell: helm repo update
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
 
-    - name: Install Kasten K10
+    - name: Install or Upgrade Kasten K10
       shell: |
         helm upgrade --install k10 kasten/k10 \
           --namespace kasten-io \
           --create-namespace \
+          --set auth.tokenAuth.enabled=true \
           --set prometheus.server.persistentVolume.size=4Gi \
           --set global.persistence.size=8Gi \
           --set limiter.executorReplicas=1
