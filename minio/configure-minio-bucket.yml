@@ -11,8 +11,7 @@
     minio_url: "https://minio.caverna.local:9000"
     minio_access_key: "{{ lookup('env', 'minio_access_key') }}"
     minio_secret_key: "{{ lookup('env', 'minio_secret_key') }}"
-
-    random_suffix: "{{ lookup('password', '/dev/null length=5 chars=digits') }}"
+    
     bucket_name: "veeam-kasten-lab-{{ random_suffix }}"
     region: "sp-conza-1"
 
@@ -23,6 +22,10 @@
     policy_file: "/tmp/veeam-kasten-policy.json"
 
   tasks:
+
+    - name: Generate random suffix once
+      set_fact:
+        random_suffix: "{{ lookup('password', '/dev/null length=5 chars=digits') }}"
 
     - name: Download MinIO Client
       get_url:
