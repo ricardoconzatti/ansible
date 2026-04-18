@@ -12,11 +12,11 @@
     minio_access_key: "{{ lookup('env', 'minio_access_key') }}"
     minio_secret_key: "{{ lookup('env', 'minio_secret_key') }}"
 
-    random_name: "veeam-kasten-lab-{{ lookup('password', '/dev/null length=5 chars=digits') }}"
-    bucket_name: "{{ random_name }}"
+    random_suffix: "{{ lookup('password', '/dev/null length=5 chars=digits') }}"
+    bucket_name: "veeam-kasten-lab-{{ random_suffix }}"
     region: "sp-conza-1"
 
-    user_name: "veeam.kasten"
+    user_name: "veeam.kasten.{{ random_suffix }}""
     user_password: "vee@m123"
 
     policy_name: "veeam-kasten-policy"
