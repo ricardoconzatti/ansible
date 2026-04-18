@@ -1,4 +1,4 @@
-- name: Configure Kasten Ingress
+- name: Configure Kasten Ingress (HTTPS)
   hosts: all
   become: yes
 
@@ -6,10 +6,11 @@
     kubeconfig: /etc/rancher/k3s/k3s.yaml
     domain: "caverna.local"
     kasten_host: "kasten-{{ inventory_hostname.split('.')[-1] }}.{{ domain }}"
+    tls_secret: "kasten-{{ inventory_hostname.split('.')[-1] }}-tls"
 
   tasks:
 
-    - name: Create Kasten ingress
+    - name: Create Kasten Ingress (HTTPS)
       shell: |
         cat <<EOF | kubectl apply -f -
         apiVersion: networking.k8s.io/v1
@@ -18,9 +19,13 @@
           name: kasten-traefik-ingress
           namespace: kasten-io
           annotations:
-            traefik.ingress.kubernetes.io/router.entrypoints: web
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
         spec:
           ingressClassName: traefik
+          tls:
+          - hosts:
+            - {{ kasten_host }}
+            secretName: {{ tls_secret }}
           rules:
           - host: {{ kasten_host }}
             http:
@@ -38,4 +43,4 @@
 
     - name: Show Kasten URL
       debug:
-        msg: "Kasten URL: http://{{ kasten_host }}/k10/#"
+        msg: "Kasten URL: https://{{ kasten_host }}/k10/#"
