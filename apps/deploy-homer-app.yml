@@ -4,7 +4,8 @@
 
   vars:
     kubeconfig: /etc/rancher/k3s/k3s.yaml
-    homerdemo_host: "homer-{{ inventory_hostname.split('.')[-1] }}.caverna.local"
+    domain: "caverna.local"
+    homerdemo_host: "homer-{{ inventory_hostname.split('.')[-1] }}.{{ domain }}"
 
   tasks:
 
@@ -28,15 +29,6 @@
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
 
-- name: Show URL
-  hosts: all
-  gather_facts: false
-
-  vars:
-    homerdemo_host: "homer-{{ inventory_hostname.split('.')[-1] }}.caverna.local"
-
-  tasks:
-
     - name: Print URL
       debug:
-        msg: "Homer demo URL: http://{{ homerdemo_host }}"
+        msg: "Homer demo app URL: http://{{ homerdemo_host }}"
