@@ -1,0 +1,30 @@
+- name: Install MinIO Client (mc)
+  hosts: all
+  gather_facts: no
+
+  vars:
+    mc_path: /usr/local/bin/mc
+    mc_url: https://dl.min.io/client/mc/release/linux-amd64/mc
+
+  tasks:
+
+    - name: Check if mc already exists
+      stat:
+        path: "{{ mc_path }}"
+      register: mc_stat
+
+    - name: Download mc binary
+      get_url:
+        url: "{{ mc_url }}"
+        dest: "{{ mc_path }}"
+        mode: '0755'
+      when: not mc_stat.stat.exists
+
+    - name: Verify mc installation
+      command: "{{ mc_path }} --version"
+      register: mc_version
+      changed_when: false
+
+    - name: Show mc version
+      debug:
+        msg: "{{ mc_version.stdout }}"
