@@ -16,7 +16,7 @@
     bucket_name: "veeam-kasten-lab-{{ random_suffix }}"
     region: "sp-conza-1"
 
-    user_name: "veeam.kasten.{{ random_suffix }}""
+    user_name: "veeam.kasten.{{ random_suffix }}"
     user_password: "vee@m123"
 
     policy_name: "veeam-kasten-policy"
