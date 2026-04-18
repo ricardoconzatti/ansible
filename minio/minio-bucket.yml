@@ -1,2 +1,0 @@
-- import_playbook: configure-minio-client.yml
-- import_playbook: configure-minio-bucket.yml
