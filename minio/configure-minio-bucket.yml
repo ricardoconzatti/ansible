@@ -1,9 +1,12 @@
 - name: Configure MinIO Bucket (for Kasten)
   hosts: all
+  gather_facts: no
 
   vars:
     mc_path: "/tmp/mc"
+    mc: "{{ mc_path }}"
     mc_download_url: "https://dl.min.io/client/mc/release/linux-amd64/mc"
+
     minio_alias: "minio"
     minio_url: "https://minio.caverna.local:9000"
     minio_access_key: "{{ lookup('env', 'minio_access_key') }}"
@@ -20,14 +23,15 @@
     policy_file: "/tmp/veeam-kasten-policy.json"
 
   tasks:
-  
+
     - name: Download MinIO Client
       get_url:
         url: "{{ mc_download_url }}"
         dest: "{{ mc_path }}"
+        mode: '0755'
 
     - name: Verify MinIO Client installation
-      command: "{{ mc_path }} --version"
+      command: "{{ mc }} --version"
       register: mc_version
       changed_when: false
 
@@ -37,19 +41,19 @@
 
     - name: Set MinIO alias
       shell: >
-        mc alias set {{ minio_alias }} {{ minio_url }}
+        {{ mc }} alias set {{ minio_alias }} {{ minio_url }}
         {{ minio_access_key }} {{ minio_secret_key }} --insecure
       register: alias_result
       changed_when: "'Added' in alias_result.stdout or 'Updated' in alias_result.stdout"
 
     - name: Set MinIO region
       shell: >
-        mc admin config set {{ minio_alias }} region name={{ region }} --insecure
+        {{ mc }} admin config set {{ minio_alias }} region name={{ region }} --insecure
       ignore_errors: true
 
     - name: Create bucket (with versioning + lock)
       shell: >
-        mc mb {{ minio_alias }}/{{ bucket_name }}
+        {{ mc }} mb {{ minio_alias }}/{{ bucket_name }}
         --with-lock --with-versioning --region {{ region }} --insecure
       register: bucket_result
       failed_when: false
@@ -57,7 +61,7 @@
 
     - name: Create MinIO user
       shell: >
-        mc admin user add {{ minio_alias }} {{ user_name }} {{ user_password }} --insecure
+        {{ mc }} admin user add {{ minio_alias }} {{ user_name }} {{ user_password }} --insecure
       register: user_result
       failed_when: false
       changed_when: "'Added user' in user_result.stdout"
@@ -69,33 +73,33 @@
 
     - name: Create policy
       shell: >
-        mc admin policy create {{ minio_alias }} {{ policy_name }} {{ policy_file }} --insecure
+        {{ mc }} admin policy create {{ minio_alias }} {{ policy_name }} {{ policy_file }} --insecure
       register: policy_result
       failed_when: false
       changed_when: "'Created policy' in policy_result.stdout"
 
     - name: Attach policy to user
       shell: >
-        mc admin policy attach {{ minio_alias }} {{ policy_name }}
+        {{ mc }} admin policy attach {{ minio_alias }} {{ policy_name }}
         --user {{ user_name }} --insecure
       register: attach_result
       failed_when: false
 
     - name: Set retention (COMPLIANCE 1d)
       shell: >
-        mc retention set --default COMPLIANCE 1d
+        {{ mc }} retention set --default COMPLIANCE 1d
         {{ minio_alias }}/{{ bucket_name }} --insecure
       register: retention_result
       failed_when: false
 
     - name: Show retention info
       shell: >
-        mc retention info {{ minio_alias }}/{{ bucket_name }} --insecure
+        {{ mc }} retention info {{ minio_alias }}/{{ bucket_name }} --insecure
       register: retention_info
 
     - name: Show versioning info
       shell: >
-        mc version info {{ minio_alias }}/{{ bucket_name }} --insecure
+        {{ mc }} version info {{ minio_alias }}/{{ bucket_name }} --insecure
       register: version_info
 
     - name: Debug output
