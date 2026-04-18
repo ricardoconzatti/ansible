@@ -101,16 +101,6 @@
       register: retention_result
       failed_when: false
 
-    - name: Show retention info
-      shell: >
-        {{ mc }} retention info {{ minio_alias }}/{{ bucket_name }} --insecure
-      register: retention_info
-
-    - name: Show versioning info
-      shell: >
-        {{ mc }} version info {{ minio_alias }}/{{ bucket_name }} --insecure
-      register: version_info
-
     - name: Debug output
       debug:
         msg:
