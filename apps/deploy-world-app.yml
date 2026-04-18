@@ -31,4 +31,4 @@
 
     - name: Show world URL
       debug:
-        msg: "World demo app URL: http://{{ world_host }}"
+        msg: "World demo app URL: https://{{ world_host }}"
