@@ -1,10 +1,9 @@
 - hosts: all
   vars:
     use_artifact: true
-    artifact_file: /tmp/artifact-lab.json
   tasks:
     - debug:
-        msg: "Starting full lab deploy"
+        msg: "##### Starting full lab deploy"
 
 # kubernetes (k3s / longhorn)
 - import_playbook: ../k3s-longhorn/deploy-k3s-longhorn-single-node.yml
@@ -18,3 +17,6 @@
 # demo app
 - import_playbook: ../apps/deploy-homer-app.yml
 - import_playbook: ../apps/deploy-world-app.yml
+
+# send artifact to n8n
+- import_playbook: send-artifact-n8n.yml
