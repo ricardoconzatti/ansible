@@ -39,5 +39,7 @@
         name: artifact
       vars:
         artifact_section:
-          demo-app:
-            world-url: "https://{{ world_host }}"
+          demo_apps:
+            world:
+            url: "https://{{ world_host }}"
+            credential: "demo/demo"
