@@ -32,3 +32,11 @@
     - name: Print URL
       debug:
         msg: "Homer demo app URL: http://{{ homerdemo_host }}"
+
+    - name: Add demo app (homer) to artifact
+      include_role:
+        name: artifact
+      vars:
+        artifact_section:
+          demo-app:
+            homer-url: "http://{{ homerdemo_host }}"
