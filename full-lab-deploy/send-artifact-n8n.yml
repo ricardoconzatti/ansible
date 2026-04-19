@@ -8,7 +8,7 @@
 
     - name: Send to n8n webhook
       uri:
-        url: "https://automation.conza.xyz/webhook-test/kasten-lab"
+        url: "https://webhook-automation.conza.xyz/webhook/kasten-lab"
         method: POST
         body_format: json
         body: "{{ artifact_raw.content | b64decode | from_json }}"
