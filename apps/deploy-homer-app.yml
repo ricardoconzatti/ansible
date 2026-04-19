@@ -39,6 +39,7 @@
         name: artifact
       vars:
         artifact_section:
-          demo-app:
-            homer-url: "http://{{ homerdemo_host }}"
+          demo_apps:
+            homer:
+            url: "http://{{ homerdemo_host }}"
       when: use_artifact
