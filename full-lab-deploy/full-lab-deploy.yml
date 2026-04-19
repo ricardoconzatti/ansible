@@ -1,3 +1,10 @@
+- include_role:
+    name: artifact
+  vars:
+    artifact_section:
+      test:
+        ok: true
+        
 # kubernetes (k3s / longhorn)
 - import_playbook: ../k3s-longhorn/install-kubectl.yml
 - import_playbook: ../k3s-longhorn/install-k3s.yml
@@ -12,5 +19,9 @@
 - import_playbook: ../kasten/configure-kasten-serviceaccount-token.yml
 - import_playbook: ../kasten/configure-kasten-ingress.yml
 
+# minio (repo)
+- import_playbook: ../minio/configure-minio-bucket.yml
+
 # demo app
 - import_playbook: ../apps/deploy-homer-app.yml
+- import_playbook: ../apps/deploy-world-app.yml
