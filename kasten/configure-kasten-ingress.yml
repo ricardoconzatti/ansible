@@ -44,3 +44,12 @@
     - name: Show Kasten URL
       debug:
         msg: "Kasten URL: https://{{ kasten_host }}/k10/#"
+
+    - name: Add Kasten (ingress) to artifact
+      include_role:
+        name: artifact
+      vars:
+        artifact_section:
+          longhorn:
+            url: "https://{{ kasten_host }}/k10/#"
+
