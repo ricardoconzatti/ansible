@@ -3,7 +3,7 @@
   tasks:
     - name: Read artifact
       slurp:
-        src: /tmp/artifact-lab.json
+        src: /tmp/artifact.json
       register: artifact_raw
 
     - name: Send to n8n webhook
