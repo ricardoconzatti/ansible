@@ -42,18 +42,20 @@
 
     - name: Calculate total duration
       set_fact:
-        lab_duration_seconds: "{{ lab_end_time | int - lab_start_time | int }}"
+        lab_duration_seconds: "{{ (lab_end_time | int) - (lab_start_time | int) }}"
       run_once: true
 
     - name: Format duration
       set_fact:
+        duration_min: "{{ (lab_duration_seconds | int) // 60 }}"
+        duration_sec: "{{ (lab_duration_seconds | int) % 60 }}"
         lab_duration_pretty: >-
           {{
-            (lab_duration_seconds // 60) ~ ' minuto' ~
-            ( 's' if (lab_duration_seconds // 60) != 1 else '' )
+            duration_min ~ ' minuto' ~
+            ( 's' if duration_min != 1 else '' )
             ~ ' e ' ~
-            (lab_duration_seconds % 60) ~ ' segundo' ~
-            ( 's' if (lab_duration_seconds % 60) != 1 else '' )
+            duration_sec ~ ' segundo' ~
+            ( 's' if duration_sec != 1 else '' )
           }}
       run_once: true
 
