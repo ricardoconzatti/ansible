@@ -22,7 +22,7 @@
 # veeam kasten
 - import_playbook: ../kasten/deploy-kasten.yml
 
-# minio (repo)
+# minio (bucket/repo)
 - import_playbook: ../minio/configure-minio-bucket.yml
 
 # demo app
