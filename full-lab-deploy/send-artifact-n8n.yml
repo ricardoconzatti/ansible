@@ -1,16 +1,29 @@
-- name: Send artifact to n8n
+- name: Send artifact + PDF to n8n
   hosts: all
   run_once: true
 
   vars:
     url_webhook: "https://webhook-automation.conza.xyz/webhook/kasten-lab"
     file: "/tmp/artifact.json"
+    pdf_url: "https://minio.caverna.local:9000/files-kasten-lab/lab-instructions.pdf"
+    pdf_file: "/tmp/lab-instructions.pdf"
 
   tasks:
-    - name: Read artifact
+
+    - name: Read artifact JSON
       slurp:
         src: "{{ file }}"
       register: artifact_raw
+
+    - name: Download PDF from MinIO
+      get_url:
+        url: "{{ pdf_url }}"
+        dest: "{{ pdf_file }}"
+
+    - name: Read PDF as base64
+      slurp:
+        src: "{{ pdf_file }}"
+      register: pdf_raw
 
     - name: Send to n8n webhook
       uri:
@@ -20,5 +33,8 @@
         body:
           recipient_email: "{{ recipient_email }}"
           data: "{{ artifact_raw.content | b64decode | from_json }}"
+          pdf:
+            filename: "lab-instructions.pdf"
+            content: "{{ pdf_raw.content }}"
         headers:
           Content-Type: "application/json"
