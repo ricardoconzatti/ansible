@@ -66,7 +66,7 @@ You are informed of a change request affecting an application called `homer-demo
 
 The development team requires a modification in the way this application is exposed, but instead of directly editing the live system, you are expected to restore the most recent available backup into a completely new namespace called `homer-demo-restored`.
 
-After restoration, you must adjust the application’s ingress configuration so that the access hostname changes from `homer-xxx` to `homer-xxx-test`, while preserving the same base domain.
+After restoration, you must adjust the application’s ingress configuration so that the access hostname changes from `homer-xxx` to `homer-xxx-restored`, while preserving the same base domain.
 
 For reference, an example of ingress configuration provided by the developer is:
 
