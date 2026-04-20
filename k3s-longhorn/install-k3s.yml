@@ -65,4 +65,4 @@
       vars:
         artifact_section:
           k3s:
-            version: "http://{{ k3s_version.stdout_lines[0] }}"
+            version: "{{ k3s_version.stdout_lines[0] }}"
