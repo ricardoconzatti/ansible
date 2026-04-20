@@ -54,3 +54,11 @@
           Kasten version installed: {{
             (helm_output.stdout | from_json)[0].app_version
           }}
+
+    - name: Add Kasten (version) to artifact
+      include_role:
+        name: artifact
+      vars:
+        artifact_section:
+          kasten:
+            version: "{{ (helm_output.stdout | from_json)[0].app_version }}"
