@@ -1,0 +1,91 @@
+# Kasten Lab – Version 0.1
+
+## Disclaimer
+
+This is version 0.1 of the Kasten Lab. It contains 6 questions based on a Veeam Kasten environment.
+
+It is important to note that this lab is not directly related to Veeam Software. It was created and is independently maintained by a community member and should be used strictly for study, testing, and validation purposes.
+
+It is strongly discouraged to use it for anything related to production environments.
+
+---
+
+### 1
+You are responsible for operating a Kubernetes-based environment protected by Veeam Kasten. During a routine validation exercise, you are asked to ensure that a new workload running in the `world-dev` namespace is properly protected.
+
+As part of this, you should create a backup policy named `world-dev-backup` that initially follows an on-demand execution model and is strictly scoped to resources identified by the `world-dev` namespace.
+
+Once created, you are expected to verify that at least one backup execution completes successfully, as this will be considered evidence that the policy is correctly functioning.
+
+---
+
+### 2
+After confirming the backup execution, you are instructed to investigate the underlying storage behavior of the platform.
+
+Access the Longhorn web interface and locate the persistent volume associated with the application that was just protected by the backup policy.
+
+Within that volume, identify the snapshot that has been generated as a result of the backup operation and confirm its existence and correctness, as this snapshot will be relevant for recovery validation.
+
+---
+
+### 3
+As the environment evolves, a new storage target must be introduced for off-cluster protection.
+
+You are required to create a new Location Profile using an S3-compatible backend and name it `minio-kasten-lab`.
+
+This profile should be fully functional and reachable from Kasten, and it must be validated as healthy before it can be used as a backup export destination.
+
+---
+
+### 4
+Following this, the previously created backup policy `world-dev-backup` must be modified to reflect a more production-like schedule.
+
+The execution mode should be changed from on-demand to a daily schedule running at 11:00 PM.
+
+At the same time, retention rules must be introduced so that snapshots are retained for exactly one day.
+
+The policy must also be extended to export backups to the newly created Location Profile `minio-kasten-lab`, ensuring that exported backups follow the same retention expectations as snapshots.
+
+Once these changes are applied, you are expected to trigger a manual execution of the policy to validate the configuration, and if necessary, run the manual execution so that it expires within a short window of two hours.
+
+---
+
+### 5
+In a separate scenario, you are asked to demonstrate your ability to reproduce a backup policy from scratch under updated operational requirements.
+
+A new policy named `homer-demo-backup` must be created. It should be configured to run every day at 10:00 PM.
+
+It should target the `world-dev` namespace, maintain a snapshot retention of one day, and export all backups to the previously defined `minio-kasten-lab` Location Profile.
+
+The expectation is that this policy not only exists but is actively functioning, meaning at least one successful execution must be observed, with manual execution allowed if required under a two-hour expiration constraint.
+
+---
+
+### 6
+You are informed of a change request affecting an application called `homer-demo`.
+
+The development team requires a modification in the way this application is exposed, but instead of directly editing the live system, you are expected to restore the most recent available backup into a completely new namespace called `homer-demo-new`.
+
+After restoration, you must adjust the application’s ingress configuration so that the access hostname changes from `homer-xxx` to `homer-xxx-new`, while preserving the same base domain.
+
+For reference, the original ingress configuration provided by the developer is:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: homer-demo-ingress
+  namespace: homer-demo
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: homer-xxx.conza.xyz
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: homer-web
+            port:
+              number: 80
