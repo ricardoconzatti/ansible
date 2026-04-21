@@ -1,6 +1,7 @@
-These are a set of Ansible playbooks used to deploy a single-node Kubernetes cluster with local storage, configure CSI drivers, set up a Veeam Kasten instance, create an immutable bucket for Kasten backups, and finally deploy sample applications for testing purposes.
+These are a set of Ansible playbooks used to deploy a single-node Kubernetes cluster with local storage, configure CSI drivers, set up a Veeam Kasten instance, create an immutable bucket for Kasten backups, and finally deploy sample applications for testing purposes. Additionally, the repository includes PowerCLI scripts for VMware environments, enabling automated virtual machine provisioning and lab lifecycle management.
 
 ## stack
+- Ubuntu 24.04
 - K3s v1.33
 - Longhorn 1.9.0
 - CSI driver (snapshot controller) 6.2.1
