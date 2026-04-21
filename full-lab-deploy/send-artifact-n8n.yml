@@ -15,11 +15,9 @@
         src: "{{ file }}"
       register: artifact_raw
 
-    - name: Download PDF from MinIO (ignore self-signed cert)
-      get_url:
-        url: "{{ pdf_url }}"
-        dest: "{{ pdf_file }}"
-        validate_certs: false
+    - name: Download PDF from MinIO (ignore SSL via curl)
+      ansible.builtin.command: >
+        curl -k -o {{ pdf_file }} {{ pdf_url }}
 
     - name: Read PDF as base64
       slurp:
