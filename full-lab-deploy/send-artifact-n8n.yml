@@ -19,6 +19,7 @@
       get_url:
         url: "{{ pdf_url }}"
         dest: "{{ pdf_file }}"
+        validate_certs: false
 
     - name: Read PDF as base64
       slurp:
