@@ -4,7 +4,6 @@
 
   vars:
     kubeconfig: /etc/rancher/k3s/k3s.yaml
-    domain: "{{ domain }}"
     homerdemo_host: "homer-{{ labid }}.{{ domain }}"
     use_artifact: "{{ use_artifact | default(false) }}"
 
