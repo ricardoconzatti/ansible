@@ -9,7 +9,7 @@
     mc_download_url: "https://dl.min.io/client/mc/release/linux-amd64/mc"
 
     minio_alias: "minio"
-    minio_url: "https://minio.caverna.local:9000"
+    minio_url: "{{ lookup('env', 'minio_url') }}"
     minio_access_key: "{{ lookup('env', 'minio_access_key') }}"
     minio_secret_key: "{{ lookup('env', 'minio_secret_key') }}"
     retention: "7d"
