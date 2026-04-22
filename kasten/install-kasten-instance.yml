@@ -3,6 +3,7 @@
   become: yes
 
   vars:
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
     use_artifact: "{{ use_artifact | default(false) }}"
     kasten_version: "{{ kasten_version }}"
 
@@ -10,10 +11,14 @@
 
     - name: Add Kasten Helm repo
       shell: helm repo add kasten https://charts.kasten.io/
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
       ignore_errors: true
 
     - name: Update Helm repos
       shell: helm repo update
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
 
     - name: Install or Upgrade Kasten K10
       shell: |
@@ -25,18 +30,26 @@
           --set prometheus.server.persistentVolume.size=4Gi \
           --set global.persistence.size=8Gi \
           --set limiter.executorReplicas=1
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
 
     - name: Get Kasten deployments
       shell: kubectl get deploy -n kasten-io -o name
       register: deployments
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
 
     - name: Wait for each Kasten deployment
       shell: kubectl rollout status {{ item }} -n kasten-io --timeout=600s
       loop: "{{ deployments.stdout_lines }}"
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
 
     - name: Get Kasten version
       shell: helm list -n kasten-io -o json
       register: helm_output
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
 
     - name: Show Kasten version
       debug:
