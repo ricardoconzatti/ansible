@@ -1,0 +1,33 @@
+- name: Configure Cloudflared ingress rules
+  hosts: kasten-lab-nas
+  become: yes
+
+  vars:
+    config_path: "/mnt/Caverna_Pool_01/shares/Apps/cloudflare-kasten-lab"
+
+    apps:
+      - name: kasten
+        port: 80
+      - name: longhorn
+        port: 80
+      - name: homer
+        port: 80
+      - name: world
+        port: 80
+
+    service_ip: "{{ ip }}"
+
+  tasks:
+
+    - name: Add ingress rules
+      blockinfile:
+        path: "{{ config_path }}"
+        marker: "# {mark} ANSIBLE {{ item.name }}"
+        insertbefore: "^- service: http_status:404"
+        block: |
+          - hostname: {{ item.name }}-{{ labid }}.{{ domain }}
+            service: http://{{ service_ip }}:{{ item.port }}
+      loop: "{{ apps }}"
+
+    - name: Restart cloudflared container
+      shell: docker restart cloudflared-kasten-lab
