@@ -15,7 +15,7 @@
       - name: world
         port: 80
 
-    service_ip: "{{ ip }}"
+    service_ip: "{{ ip_address }}"
 
   tasks:
 
