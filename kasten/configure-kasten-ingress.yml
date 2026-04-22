@@ -33,8 +33,6 @@
                     port:
                       number: 80
         EOF
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
 
     - name: Show Kasten URL
       debug:
