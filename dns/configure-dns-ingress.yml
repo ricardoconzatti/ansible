@@ -3,7 +3,7 @@
   become: yes
 
   vars:
-    config_path: "/mnt/Caverna_Pool_01/shares/Apps/cloudflare-kasten-lab/config.yml"
+    config_path: "/mnt/Caverna_Pool_01/kasten-lab/config.yml"
 
     apps:
       - name: kasten
