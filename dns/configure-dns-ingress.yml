@@ -36,10 +36,10 @@
         marker: "# {mark} ANSIBLE {{ item.name }}"
         insertbefore: ".*http_status:404"
         block: |
-          - hostname: {{ item.name }}-{{ labid }}.{{ domain }}
-            service: {{ item.protocol }}://{{ service_ip }}{% if item.port is defined and item.name == 'kstatus' %}:{{ item.port }}{% endif %}
+            - hostname: {{ item.name }}-{{ labid }}.{{ domain }}
+              service: {{ item.protocol }}://{{ service_ip }}{% if item.port is defined and item.name == 'kstatus' %}:{{ item.port }}{% endif %}
         unsafe_writes: true
       loop: "{{ apps }}"
 
     - name: Restart dns container
-      shell: docker restart f3de065dadf4
+      shell: docker restart cloudflared
