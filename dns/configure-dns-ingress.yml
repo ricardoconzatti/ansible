@@ -23,7 +23,7 @@
       blockinfile:
         path: "{{ config_path }}"
         marker: "# {mark} ANSIBLE {{ item.name }}"
-        insertbefore: "^- service: http_status:404"
+        insertbefore: ".*http_status:404"
         block: |
           - hostname: {{ item.name }}-{{ labid }}.{{ domain }}
             service: http://{{ service_ip }}:{{ item.port }}
