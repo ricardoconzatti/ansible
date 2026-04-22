@@ -8,12 +8,23 @@
     apps:
       - name: kasten
         port: 80
+        protocol: http
+
       - name: longhorn
         port: 80
+        protocol: http
+
       - name: homer
         port: 80
+        protocol: http
+
       - name: world
-        port: 80
+        port: 443
+        protocol: https
+
+      - name: kstatus
+        port: 31051
+        protocol: http
 
     service_ip: "{{ ip_address }}"
 
@@ -26,7 +37,7 @@
         insertbefore: ".*http_status:404"
         block: |
           - hostname: {{ item.name }}-{{ labid }}.{{ domain }}
-            service: http://{{ service_ip }}:{{ item.port }}
+            service: {{ item.protocol }}://{{ service_ip }}:{{ item.port }}
         unsafe_writes: true
       loop: "{{ apps }}"
 
