@@ -19,6 +19,8 @@
         --namespace longhorn-system
         --create-namespace
         --version "{{ longhornVersion }}"
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
 
     - name: Wait for Longhorn pods to be ready
       shell: kubectl wait --for=condition=ready pod --all -n longhorn-system --timeout=600s
