@@ -20,7 +20,7 @@
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
 
-    - name: Install or Upgrade Kasten K10
+    - name: Install or Upgrade Kasten
       shell: |
         helm upgrade --install k10 kasten/k10 \
           --version "{{ kasten_version }}" \
