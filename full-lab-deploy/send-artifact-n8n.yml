@@ -5,7 +5,7 @@
   vars:
     url_webhook: "{{ n8n_webhook }}"
     file: "/tmp/artifact.json"
-    pdf_url: "{{ 'minio_url' }}/files-kasten-lab/lab-instructions.pdf"
+    pdf_url: "{{ minio_url }}/files-kasten-lab/lab-instructions.pdf"
     pdf_file: "/tmp/lab-instructions.pdf"
 
   tasks:
