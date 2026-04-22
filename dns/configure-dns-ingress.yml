@@ -1,0 +1,28 @@
+- name: Create Cloudflare DNS routes
+  hosts: all
+  become: yes
+
+  vars:
+    tunnel_name: "truenas-container-kasten-lab"
+
+    apps:
+      - kasten
+      - longhorn
+      - homer
+      - world
+
+  tasks:
+
+    - name: Create DNS entries for all apps
+      shell: >
+        cloudflared tunnel route dns {{ tunnel_name }} {{ item }}-{{ labid }}.{{ domain }}
+      loop: "{{ apps }}"
+      register: dns_results
+      changed_when: >
+        'Added CNAME' in dns_results.stdout or
+        'Updated CNAME' in dns_results.stdout
+
+    - name: Show results
+      debug:
+        msg: "{{ item.item }} -> {{ item.stdout }}"
+      loop: "{{ dns_results.results }}"
