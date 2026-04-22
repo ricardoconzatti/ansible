@@ -84,4 +84,4 @@
       run_once: true
 
 # SEND TO N8N
-- import_playbook: send-artifact-n8n.yml
+- import_playbook: send-files-n8n.yml
