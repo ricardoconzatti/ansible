@@ -9,25 +9,20 @@
     mc_download_url: "https://dl.min.io/client/mc/release/linux-amd64/mc"
 
     minio_alias: "minio"
-    minio_url: "{{ lookup('env', 'minio_url') }}"
     minio_access_key: "{{ lookup('env', 'minio_access_key') }}"
     minio_secret_key: "{{ lookup('env', 'minio_secret_key') }}"
     retention: "7d"
     
-    bucket_name: "veeam-kasten-lab-{{ random_suffix }}"
+    bucket_name: "veeam-kasten-lab-{{ labid }}"
     region: "sp-conza-1"
 
-    user_name: "veeam.kasten.{{ random_suffix }}"
+    user_name: "veeam.kasten.{{ labid }}"
     user_password: "vee@m123"
 
     policy_name: "veeam-kasten-policy"
     policy_file: "/tmp/veeam-kasten-policy.json"
 
   tasks:
-
-    - name: Generate random suffix once
-      set_fact:
-        random_suffix: "{{ lookup('password', '/dev/null length=5 chars=digits') }}"
 
     - name: Download MinIO Client
       get_url:
