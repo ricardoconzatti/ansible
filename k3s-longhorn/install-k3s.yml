@@ -52,11 +52,11 @@
 
     - name: Get K3s version
       command: k3s --version
-      register: k3s_version
+      register: k3s_version_out
 
     - name: Show K3s version
       debug:
-        msg: "{{ k3s_version.stdout_lines[0] }}"
+        msg: "{{ k3s_version_out.stdout_lines[0] }}"
 
     - name: Add K3s to artifact
       include_role:
@@ -64,4 +64,4 @@
       vars:
         artifact_section:
           k3s:
-            version: "{{ k3s_version.stdout_lines[0] }}"
+            version: "{{ k3s_version_out.stdout_lines[0] }}"
