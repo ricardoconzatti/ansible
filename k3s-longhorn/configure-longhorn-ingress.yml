@@ -3,7 +3,6 @@
   become: yes
 
   vars:
-    kubeconfig: /etc/rancher/k3s/k3s.yaml
     domain: "{{ domain }}"
     longhorn_host: "longhorn-{{ inventory_hostname.split('.')[-1] }}.{{ domain }}"
     use_artifact: "{{ use_artifact | default(false) }}"
