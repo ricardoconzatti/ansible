@@ -1,5 +1,5 @@
 - name: Install Longhorn
-  hosts: all
+  hosts: kasten-lab
   become: yes
 
   vars:
