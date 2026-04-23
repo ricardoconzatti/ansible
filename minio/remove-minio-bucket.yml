@@ -32,19 +32,19 @@
     - name: Configure MinIO alias
       shell: >
         {{ mc }} alias set {{ minio_alias }} {{ minio_url }}
-        {{ minio_access_key }} {{ minio_secret_key }}
+        {{ minio_access_key }} {{ minio_secret_key }} --insecure
       changed_when: false
 
     - name: Remove MinIO bucket (force)
       shell: >
-        {{ mc }} rm --recursive --force {{ minio_alias }}/{{ minio_bucket }}
+        {{ mc }} rm --recursive --force {{ minio_alias }}/{{ minio_bucket }} --insecure
       register: bucket_remove
       failed_when: false
       changed_when: "'Removed' in bucket_remove.stdout"
 
     - name: Remove MinIO user
       shell: >
-        {{ mc }} admin user remove {{ minio_alias }} {{ minio_user }}
+        {{ mc }} admin user remove {{ minio_alias }} {{ minio_user }} --insecure
       register: user_remove
       failed_when: false
       changed_when: "'Removed' in user_remove.stdout"
