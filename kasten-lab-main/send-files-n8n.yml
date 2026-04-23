@@ -3,10 +3,9 @@
   run_once: true
 
   vars:
-    url_webhook: "{{ n8n_webhook_email }}"
-    file: "/tmp/artifact.json"
+    file: "{{ labdir }}/artifact.json"
     pdf_url: "{{ minio_url }}/files-kasten-lab/lab-instructions.pdf"
-    pdf_file: "/tmp/lab-instructions.pdf"
+    pdf_file: "{{ labdir }}/lab-instructions.pdf"
 
   tasks:
 
@@ -26,7 +25,7 @@
 
     - name: Send to n8n webhook
       uri:
-        url: "{{ url_webhook }}"
+        url: "{{ n8n_webhook_email }}"
         method: POST
         body_format: json
         body:
