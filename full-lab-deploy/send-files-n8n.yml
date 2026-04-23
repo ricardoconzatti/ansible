@@ -3,7 +3,7 @@
   run_once: true
 
   vars:
-    url_webhook: "{{ n8n_webhook }}"
+    url_webhook: "{{ n8n_webhook_email }}"
     file: "/tmp/artifact.json"
     pdf_url: "{{ minio_url }}/files-kasten-lab/lab-instructions.pdf"
     pdf_file: "/tmp/lab-instructions.pdf"
