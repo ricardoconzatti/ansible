@@ -1,5 +1,5 @@
 - name: Install K3s
-  hosts: all
+  hosts: kasten-lab
   become: yes
 
   vars:
