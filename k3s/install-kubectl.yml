@@ -1,5 +1,5 @@
 - name: Prepare node (disable swap, install kubectl)
-  hosts: all
+  hosts: kasten-lab
   become: yes
 
   tasks:
