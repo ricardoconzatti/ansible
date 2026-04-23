@@ -5,7 +5,6 @@
   vars:
     kubeconfig: /etc/rancher/k3s/k3s.yaml
     use_artifact: "{{ use_artifact | default(false) }}"
-    kasten_version: "{{ kasten_version }}"
 
   tasks:
 
