@@ -40,5 +40,5 @@
         artifact_section:
           demo_apps:
             homer:
-              url: "http://{{ homerdemo_host }}"
+              url: "https://{{ homerdemo_host }}"
       when: use_artifact
