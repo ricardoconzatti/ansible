@@ -4,7 +4,7 @@
 
   vars:
     use_artifact: "{{ use_artifact | default(false) }}"
-    mc_path: "/tmp/mc"
+    mc_path: "{{ labdir }}/mc"
     mc: "{{ mc_path }}"
     mc_download_url: "https://dl.min.io/client/mc/release/linux-amd64/mc"
 
@@ -16,11 +16,11 @@
     bucket_name: "kasten-lab-{{ labid }}"
     region: "sp-conza-1"
 
-    user_name: "kasten.lab.{{ labid }}"
+    user_name: "kasten-lab-{{ labid }}"
     user_password: "K@sten{{ labid }}"
 
     policy_name: "kasten-lab-policy"
-    policy_file: "/tmp/kasten-lab-policy.json"
+    policy_file: "{{ labdir }}/kasten-lab-policy.json"
 
   tasks:
 
