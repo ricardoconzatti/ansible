@@ -1,5 +1,5 @@
 - name: Expose Longhorn via Ingress
-  hosts: all
+  hosts: kasten-lab
   become: yes
 
   vars:
