@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: kasten-lab
   gather_facts: no
   vars:
     use_artifact: true
