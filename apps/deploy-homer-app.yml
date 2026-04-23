@@ -1,5 +1,5 @@
 - name: Deploy Homer App
-  hosts: all
+  hosts: kasten-lab
   become: yes
 
   vars:
