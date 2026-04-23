@@ -1,5 +1,5 @@
 - name: Install Helm 3
-  hosts: all
+  hosts: kasten-lab
   become: yes
 
   tasks:
