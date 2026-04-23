@@ -1,5 +1,5 @@
 - name: Deploy World App
-  hosts: all
+  hosts: kasten-lab
   become: yes
 
   vars:
