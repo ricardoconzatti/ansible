@@ -1,5 +1,5 @@
 - name: Send artifact + PDF to n8n
-  hosts: all
+  hosts: kasten-lab
   run_once: true
 
   vars:
