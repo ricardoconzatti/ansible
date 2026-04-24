@@ -1,64 +1,92 @@
-# === CONFIG ===
-$vCenter = "vcenter.caverna.local"
-#$vcUser = "conza@caverna.local"
-#$vcPass = "no"
+param(
+    [string]$labId
+)
 
-$TemplateVM = "Ubuntu 24.04"
-$SnapshotName = "snapshot-linked"
-$Datastore = "NUC01_GOLD_DS_01"
-$VMHost = "esxi-nuc01.caverna.local"
-$Folder = "Lab"
-$CustomizationSpecName = "Ubuntu IP VLAN 10"
+$ErrorActionPreference = "Stop"
 
-# VM config
-$BaseVMName = "kub-lab"
-$BaseIP = "192.168.10."
-$StartIP = 150
-$NumCPU = 2
-$MemoryGB = 6
+try {
 
-# Lab duration (in minutes)
-$LabDurationMinutes = 120
+    # Disable PowerCLI warnings
+    Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false -Confirm:$false | Out-Null
 
-# === CONNECT ===
-Connect-VIServer -Server $vCenter #-User $vcUser -Password $vcPass
+    # === CONFIG ===
+    $vCenter = "vcenter.caverna.local"
+    #$vcUser = "conza@caverna.local"
+    #$vcPass = "no"
 
-# === INPUT ===
-$Qtd = Read-Host "How many VMs do you want to create?"
+    $TemplateVM = "Ubuntu 24.04"
+    $SnapshotName = "snapshot-linked"
+    $Datastore = "NUC01_GOLD_DS_01"
+    $VMHost = "esxi-nuc01.caverna.local"
+    $Folder = "Lab"
+    $CustomizationSpecName = "Ubuntu IP VLAN 10"
 
-# === GET SOURCE OBJECTS ===
-$SourceVM = Get-VM -Name $TemplateVM
-$Snapshot = Get-Snapshot -VM $SourceVM -Name $SnapshotName
+    $BaseIP = "192.168.10."
+    $NumCPU = 2
+    $MemoryGB = 6
 
-# Store created VMs
-$CreatedVMs = @()
+    # === CONNECT ===
+    Connect-VIServer -Server $vCenter #-User $vcUser -Password $vcPass | Out-Null
 
-# === LOOP ===
-for ($i = 1; $i -le $Qtd; $i++) {
+    # === VALIDATE SOURCE ===
+    $SourceVM = Get-VM -Name $TemplateVM
+    if (-not $SourceVM) {
+        throw "Template VM not found"
+    }
 
-    $Index = "{0:D3}" -f $i
-    $VMName = "$BaseVMName-$Index"
-    $IP = $BaseIP + ($StartIP + $i)
+    $Snapshot = Get-Snapshot -VM $SourceVM -Name $SnapshotName
+    if (-not $Snapshot) {
+        throw "Snapshot not found"
+    }
 
-    Write-Host "Creating VM: $VMName with IP $IP" -ForegroundColor Green
+    # === FIND AVAILABLE IP ===
+    $SelectedIP = $null
 
-    # Temporary customization spec
+    for ($i = 151; $i -le 159; $i++) {
+        $ip = "$BaseIP$i"
+
+        if (-not (Test-Connection -ComputerName $ip -Count 1 -Quiet -ErrorAction SilentlyContinue)) {
+            $SelectedIP = $ip
+            break
+        }
+    }
+
+    if (-not $SelectedIP) {
+        throw "No available IP found in range 151-159"
+    }
+
+    # === VM NAME ===
+    if (-not $labId) {
+        throw "labId parameter is required"
+    }
+
+    $VMName = "kasten-lab-$labId"
+
+    # === TEMP SPEC ===
     $TempSpecName = "temp-$VMName"
 
     Get-OSCustomizationSpec -Name $TempSpecName -ErrorAction SilentlyContinue | `
-        Remove-OSCustomizationSpec -Confirm:$false
+        Remove-OSCustomizationSpec -Confirm:$false | Out-Null
 
-    $Spec = Get-OSCustomizationSpec -Name $CustomizationSpecName | `
-        New-OSCustomizationSpec -Name $TempSpecName -Type NonPersistent
+    $BaseSpec = Get-OSCustomizationSpec -Name $CustomizationSpecName
+    if (-not $BaseSpec) {
+        throw "Base customization spec not found"
+    }
+
+    $Spec = New-OSCustomizationSpec -Spec $BaseSpec -Name $TempSpecName -Type NonPersistent
+
+    if (-not $Spec) {
+        throw "Failed to create temporary customization spec"
+    }
 
     Get-OSCustomizationNicMapping -OSCustomizationSpec $Spec | `
         Set-OSCustomizationNicMapping `
             -IpMode UseStaticIP `
-            -IpAddress $IP `
+            -IpAddress $SelectedIP `
             -SubnetMask "255.255.255.0" `
-            -DefaultGateway "192.168.10.250"
+            -DefaultGateway "192.168.10.250" | Out-Null
 
-    # Create linked clone
+    # === CREATE VM ===
     New-VM `
         -Name $VMName `
         -VM $SourceVM `
@@ -70,40 +98,42 @@ for ($i = 1; $i -le $Qtd; $i++) {
         -OSCustomizationSpec $TempSpecName | Out-Null
 
     Start-Sleep -Seconds 5
-    $vm = Get-VM -Name $VMName
 
-    # Set CPU and Memory
+    $vm = Get-VM -Name $VMName
+    if (-not $vm) {
+        throw "VM creation failed"
+    }
+
+    # === SET CPU / RAM ===
     Set-VM -VM $vm -NumCpu $NumCPU -MemoryGB $MemoryGB -Confirm:$false | Out-Null
 
-    # Power on
+    # === POWER ON ===
     Start-VM -VM $vm | Out-Null
 
-    # Add to list
-    $CreatedVMs += $vm
+    Start-Sleep -Seconds 5
 
-    # Cleanup temp spec
+    $vmCheck = Get-VM -Name $VMName
+    if ($vmCheck.PowerState -ne "PoweredOn") {
+        throw "VM failed to power on"
+    }
+
+    # === CLEANUP ===
     Remove-OSCustomizationSpec -OSCustomizationSpec $TempSpecName -Confirm:$false | Out-Null
 
-    Start-Sleep -Seconds 2
+    # === SUCCESS OUTPUT ===
+    $result = @{
+        status  = "success"
+        vm_name = $VMName
+        ip      = $SelectedIP
+    }
+
+}
+catch {
+    $result = @{
+        status  = "error"
+        message = $_.Exception.Message
+    }
 }
 
-Write-Host "All VMs created successfully" -ForegroundColor Cyan
-
-# === WAIT FOR LAB DURATION ===
-Write-Host "Lab will run for $LabDurationMinutes minutes..." -ForegroundColor Yellow
-Start-Sleep -Seconds ($LabDurationMinutes * 60)
-
-# === POWER OFF AND ANNOTATE ===
-$ShutdownTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-
-foreach ($vm in $CreatedVMs) {
-
-    Write-Host "Powering off VM: $($vm.Name)" -ForegroundColor Red
-
-    Stop-VM -VM $vm -Confirm:$false | Out-Null
-
-    # Add annotation
-    Set-VM -VM $vm -Notes "Powered off at $ShutdownTime" -Confirm:$false | Out-Null
-}
-
-Write-Host "All VMs have been powered off and annotated" -ForegroundColor Cyan
+# === FINAL OUTPUT (CLEAN JSON) ===
+$result | ConvertTo-Json -Depth 5
