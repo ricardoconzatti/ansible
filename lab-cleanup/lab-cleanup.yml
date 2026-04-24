@@ -1,3 +1,15 @@
+- hosts: kasten-lab
+  gather_facts: no
+  vars:
+    use_artifact: true
+
+  tasks:
+
+    - name: Cleanup message
+      debug:
+        msg: "##### Cleaning up Kasten lab {{ labid }}"
+      run_once: true
+      
 # IMPORT PLAYBOOKS
 
 # minio
