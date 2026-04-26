@@ -11,7 +11,7 @@
 
     - name: Starting message
       debug:
-        msg: "##### Starting full Kasten lab deploy"
+        msg: "##### Starting Kasten lab deploy - {{ labdir }}"
       run_once: true
 
     - name: Ensure lab directory exists
