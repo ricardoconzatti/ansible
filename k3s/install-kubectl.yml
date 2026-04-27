@@ -11,7 +11,7 @@
         body_format: json
         body:
           lab_id: "{{ labid }}"
-          message: "{{ '%m/%d/%Y %I:%M %p' | strftime }} - instaling K3s"
+          message: "Instaling K3s"
         headers:
           Content-Type: "application/json"
         validate_certs: no
