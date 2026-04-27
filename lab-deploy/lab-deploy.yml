@@ -2,6 +2,7 @@
   gather_facts: no
   vars:
     labid: "{{ lookup('env', 'labid') }}"
+    recipient_email: "{{ lookup('env', 'recipient_email') }}"
     use_artifact: true
 
   tasks:
