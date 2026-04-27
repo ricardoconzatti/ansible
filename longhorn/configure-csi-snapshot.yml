@@ -7,6 +7,18 @@
 
   tasks:
 
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "Configuring CSI Snapshot CRDs and Controller"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
+
     - name: Apply VolumeSnapshotClass CRD
       shell: >
         kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ snapshot_version }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
