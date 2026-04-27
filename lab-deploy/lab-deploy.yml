@@ -13,8 +13,20 @@
 
     - name: Starting message
       debug:
-        msg: "##### Starting Kasten lab deploy - {{ labid }}"
+        msg: "##### Starting Kasten Lab deploy - {{ labid }}"
       run_once: true
+
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "starting Kasten Lab deploy"
+          detail: "playbook create-kasten-lab"
+        headers:
+          Content-Type: "application/json"
 
     - name: Ensure lab directory exists
       file:
