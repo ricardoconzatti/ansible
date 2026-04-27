@@ -1,6 +1,8 @@
 - hosts: kasten-lab
   gather_facts: no
-
+  vars:
+    labid: "{{ lookup('env', 'labid') }}"
+    
   tasks:
 
     - name: Cleanup message
