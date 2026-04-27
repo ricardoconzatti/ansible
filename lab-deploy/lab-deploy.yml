@@ -81,6 +81,19 @@
         msg: "Total lab deploy time: {{ lab_duration_pretty }}"
       run_once: true
 
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "Finishing ansible playbook"
+          detail: "Total lab deploy time: {{ duration_pretty }}"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
+
     - name: Add duration to artifact
       include_role:
         name: artifact
