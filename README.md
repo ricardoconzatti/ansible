@@ -15,7 +15,9 @@ These are a set of Ansible playbooks used to deploy a single-node Kubernetes clu
 ## Access & Lab Lifecycle
 Access to the lab is provisioned on demand. When a user requests access, an automated workflow generates a unique Lab ID and deploys the entire environment from scratch. Once provisioning is complete, access details are sent via email. The process takes about 12 minutes to conclude. Each lab environment is temporary. When the allocated time expires, the environment is fully deprovisioned, including all associated resources and data. This process is irreversible — it is not possible to recover a lab once it has been removed.
 
-Please note that this lab runs 100% on my personal homelab infrastructure. Feel free to use it to learn and improve your knowledge of Veeam Kasten, but use it responsibly and avoid unnecessary resource consumption. This helps ensure the lab remains available and responsive for everyone.
+**Please note that this lab runs 100% on my personal homelab infrastructure. Feel free to use it to learn and improve your knowledge of Veeam Kasten, but use it responsibly and avoid unnecessary resource consumption. This helps ensure the lab remains available and responsive for everyone.**
+
+**[Request Lab Access](https://kasten-lab.conza.xyz)**
 
 ---
 
