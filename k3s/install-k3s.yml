@@ -7,18 +7,6 @@
 
   tasks:
 
-    - name: Log update (site)
-      uri:
-        url: "{{ site_webhook_logs }}"
-        method: POST
-        body_format: json
-        body:
-          lab_id: "{{ labid }}"
-          message: "Instaling K3s"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no
-
     - name: Install K3s
       shell: curl -sfL https://get.k3s.io | sh -
       environment:
@@ -69,6 +57,19 @@
     - name: Show K3s version
       debug:
         msg: "{{ k3s_version_out.stdout_lines[0] }}"
+
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "Instaling K3s"
+          detail: "{{ k3s_version_out.stdout_lines[0] }}"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
 
     - name: Add K3s to artifact
       include_role:
