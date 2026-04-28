@@ -7,18 +7,6 @@
     use_artifact: "{{ use_artifact | default(false) }}"
 
   tasks:
-  
-    - name: Log update (site)
-      uri:
-        url: "{{ site_webhook_logs }}"
-        method: POST
-        body_format: json
-        body:
-          lab_id: "{{ labid }}"
-          message: "Instaling Kasten"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no
         
     - name: Add Kasten Helm repo
       shell: helm repo add kasten https://charts.kasten.io/
@@ -68,6 +56,19 @@
           Kasten version installed: {{
             (helm_output.stdout | from_json)[0].app_version
           }}
+
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "Instaling Kasten"
+          detail: "Kasten version: {{ (helm_output.stdout | from_json)[0].app_version }}"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
 
     - name: Add Kasten (version) to artifact
       include_role:
