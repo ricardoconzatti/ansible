@@ -17,6 +17,7 @@
         body:
           lab_id: "{{ labid }}"
           message: "Deploying demo application - Homer"
+          detail: "Homer URL: https://{{ homerdemo_host }}"
         headers:
           Content-Type: "application/json"
         validate_certs: no
