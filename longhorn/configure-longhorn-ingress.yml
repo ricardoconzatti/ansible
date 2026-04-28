@@ -7,18 +7,6 @@
     use_artifact: "{{ use_artifact | default(false) }}"
 
   tasks:
-
-    - name: Log update (site)
-      uri:
-        url: "{{ site_webhook_logs }}"
-        method: POST
-        body_format: json
-        body:
-          lab_id: "{{ labid }}"
-          message: "Configuing Longhorn ingress"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no
         
     - name: Create Longhorn Ingress
       shell: |
@@ -48,6 +36,19 @@
     - name: Show Longhorn URL
       debug:
         msg: "Longhorn URL: http://{{ longhorn_host }}"
+
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "Configuing Longhorn ingress"
+          detail: "Longhorn URL: https://{{ longhorn_host }}"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
 
     - name: Add Longhorn to artifact
       include_role:
