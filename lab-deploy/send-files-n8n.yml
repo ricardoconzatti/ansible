@@ -17,6 +17,7 @@
         body:
           lab_id: "{{ labid }}"
           message: "Sending user e-mail with access information (1/2)"
+          detail: "Check your email for access info and instructions"
         headers:
           Content-Type: "application/json"
         validate_certs: no
