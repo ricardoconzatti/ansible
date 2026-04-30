@@ -11,7 +11,7 @@
         body_format: json
         body:
           lab_id: "{{ labid }}"
-          message: "Instaling Helm3"
+          message: "Installing Helm3"
         headers:
           Content-Type: "application/json"
         validate_certs: no
