@@ -65,7 +65,7 @@
         body_format: json
         body:
           lab_id: "{{ labid }}"
-          message: "Instaling K3s"
+          message: "Installing K3s"
           detail: "{{ k3s_version_out.stdout_lines[0] }}"
         headers:
           Content-Type: "application/json"
