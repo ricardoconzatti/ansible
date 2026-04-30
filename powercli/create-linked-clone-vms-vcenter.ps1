@@ -4,6 +4,16 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# === LOCK CONFIG ===
+$LockDir = "/home/conza/scripts/ip-locks"
+
+if (-not (Test-Path $LockDir)) {
+    New-Item -ItemType Directory -Path $LockDir | Out-Null
+}
+
+$SelectedIP = $null
+$LockFile = $null
+
 try {
 
     # Disable PowerCLI warnings
@@ -11,7 +21,7 @@ try {
 
     # === CONFIG ===
     $vCenter = "vcenter.caverna.local"
-    #$vcUser = "conza@caverna.local"
+    #$vcUser = "no"
     #$vcPass = "no"
 
     $TemplateVM = "Ubuntu 24.04"
@@ -39,15 +49,27 @@ try {
         throw "Snapshot not found"
     }
 
-    # === FIND AVAILABLE IP ===
-    $SelectedIP = $null
-
+    # === FIND AVAILABLE IP WITH LOCK ===
     for ($i = 151; $i -le 159; $i++) {
         $ip = "$BaseIP$i"
+        $lockPath = "$LockDir/$ip.lock"
 
-        if (-not (Test-Connection -ComputerName $ip -Count 1 -Quiet -ErrorAction SilentlyContinue)) {
-            $SelectedIP = $ip
-            break
+        try {
+            $fs = [System.IO.File]::Open($lockPath, 'CreateNew', 'Write', 'None')
+            $fs.Close()
+
+            if (-not (Test-Connection -ComputerName $ip -Count 1 -Quiet -ErrorAction SilentlyContinue)) {
+                $SelectedIP = $ip
+                $LockFile = $lockPath
+                break
+            }
+            else {
+                # IP já responde → libera lock
+                Remove-Item $lockPath -ErrorAction SilentlyContinue
+            }
+        }
+        catch {
+            continue
         }
     }
 
@@ -117,9 +139,6 @@ try {
         throw "VM failed to power on"
     }
 
-    # === CLEANUP ===
-    Remove-OSCustomizationSpec -OSCustomizationSpec $TempSpecName -Confirm:$false | Out-Null
-
     # === SUCCESS OUTPUT ===
     $result = @{
         status  = "success"
@@ -134,6 +153,11 @@ catch {
         message = $_.Exception.Message
     }
 }
+finally {
+    if ($result.status -ne "success" -and $LockFile) {
+        Remove-Item $LockFile -ErrorAction SilentlyContinue
+    }
+}
 
-# === FINAL OUTPUT (CLEAN JSON) ===
+# === FINAL OUTPUT ===
 $result | ConvertTo-Json -Depth 5
