@@ -14,7 +14,7 @@
         body_format: json
         body:
           lab_id: "{{ labid }}"
-          message: "Instaling Longhorn"
+          message: "Installing Longhorn"
           detail: "Version: {{ longhorn_version }}"
         headers:
           Content-Type: "application/json"
