@@ -65,7 +65,7 @@
         body:
           lab_id: "{{ labid }}"
           message: "Instaling Kasten"
-          detail: "Kasten version: {{ (helm_output.stdout | from_json)[0].app_version }}"
+          detail: "Version: {{ (helm_output.stdout | from_json)[0].app_version }}"
         headers:
           Content-Type: "application/json"
         validate_certs: no
