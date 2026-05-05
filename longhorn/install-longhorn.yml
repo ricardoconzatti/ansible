@@ -7,19 +7,6 @@
 
   tasks:
 
-    - name: Log update (site)
-      uri:
-        url: "{{ site_webhook_logs }}"
-        method: POST
-        body_format: json
-        body:
-          lab_id: "{{ labid }}"
-          message: "Installing Longhorn"
-          detail: "Version: {{ longhorn_version }}"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no
-
     - name: Add Longhorn repo
       shell: helm repo add longhorn https://charts.longhorn.io
       environment:
@@ -43,3 +30,16 @@
       shell: kubectl wait --for=condition=ready pod --all -n longhorn-system --timeout=600s
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "Longhorn ready"
+          detail: "Version: {{ longhorn_version }}"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
