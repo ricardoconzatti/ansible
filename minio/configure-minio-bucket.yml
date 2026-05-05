@@ -32,8 +32,8 @@
         body_format: json
         body:
           lab_id: "{{ labid }}"
-          message: "Configuring MinIO immutable bucket"
-          detail: "Bucket: {{ bucket_name }} | Retention: {{ retention_mode }} ({{ retention }})"
+          message: "🪣 Object Storage"
+          source: "system"
         headers:
           Content-Type: "application/json"
         validate_certs: no
@@ -95,6 +95,19 @@
             ]
           }
 
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "MinIO immutable bucket and user created"
+          detail: "Bucket: {{ bucket_name }} | User: {{ user_name }}"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
+
     - name: Create policy
       shell: >
         {{ mc }} admin policy create {{ minio_alias }} {{ policy_name }} {{ policy_file }} --insecure
@@ -124,6 +137,19 @@
           - "Region: {{ region }}"
           - "Access key: {{ user_name }}"
           - "Secret key: {{ user_password }}"
+
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "Retention policy configured"
+          detail: "Retention: {{ retention_mode }} ({{ retention }})"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
 
     - name: Add MinIO to artifact
       include_role:
