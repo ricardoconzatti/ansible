@@ -26,69 +26,17 @@
 
 # IMPORT PLAYBOOKS
 
-    - name: Log update (site)
-      uri:
-        url: "{{ site_webhook_logs }}"
-        method: POST
-        body_format: json
-        body:
-          lab_id: "{{ labid }}"
-          message: "🧩 Platform"
-          source: "system"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no
-
 # k3s
 - import_playbook: ../k3s/deploy-k3s-single-node.yml
 
 # longhorn
 - import_playbook: ../longhorn/deploy-longhorn-single-node.yml
 
-    - name: Log update (site)
-      uri:
-        url: "{{ site_webhook_logs }}"
-        method: POST
-        body_format: json
-        body:
-          lab_id: "{{ labid }}"
-          message: "🛡️ Data Protection"
-          source: "system"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no
-
 # veeam kasten
 - import_playbook: ../kasten/deploy-kasten.yml
 
-    - name: Log update (site)
-      uri:
-        url: "{{ site_webhook_logs }}"
-        method: POST
-        body_format: json
-        body:
-          lab_id: "{{ labid }}"
-          message: "🪣 Object Storage"
-          source: "system"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no
-
 # minio (repo)
 - import_playbook: ../minio/configure-minio-bucket.yml
-
-    - name: Log update (site)
-      uri:
-        url: "{{ site_webhook_logs }}"
-        method: POST
-        body_format: json
-        body:
-          lab_id: "{{ labid }}"
-          message: "📦 Demo Applications"
-          source: "system"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no
 
 # demo app
 - import_playbook: ../apps/deploy-homer-app.yml
