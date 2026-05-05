@@ -11,8 +11,8 @@
         body_format: json
         body:
           lab_id: "{{ labid }}"
-          message: "Configuring StorageClass / VolumeSnapshotClass"
-          detail: "annotations: k10.kasten.io/is-snapshot-class: 'true'"
+          message: "💾 Storage Configuration"
+          source: "system"
         headers:
           Content-Type: "application/json"
         validate_certs: no
@@ -56,3 +56,16 @@
     - name: Remove default from longhorn
       shell: kubectl patch storageclass longhorn -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
       ignore_errors: yes
+
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "StorageClass & VolumeSnapshotClass configured"
+          detail: "annotations: k10.kasten.io/is-snapshot-class: 'true'"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
