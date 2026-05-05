@@ -9,19 +9,6 @@
 
   tasks:
 
-    - name: Log update (site)
-      uri:
-        url: "{{ site_webhook_logs }}"
-        method: POST
-        body_format: json
-        body:
-          lab_id: "{{ labid }}"
-          message: "Sending user e-mail with access information (1/2)"
-          detail: "Check your email for access info and instructions"
-        headers:
-          Content-Type: "application/json"
-        validate_certs: no
-
     - name: Read artifact JSON
       slurp:
         src: "{{ file }}"
@@ -50,3 +37,17 @@
             content: "{{ pdf_raw.content }}"
         headers:
           Content-Type: "application/json"
+
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "✉️ Sending access information email to user"
+          detail: "Check your email for access info and instructions"
+          source: "system"
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
