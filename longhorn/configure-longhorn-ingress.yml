@@ -44,8 +44,8 @@
         body_format: json
         body:
           lab_id: "{{ labid }}"
-          message: "Configuring Longhorn ingress"
-          detail: "Longhorn URL: https://{{ longhorn_host }}"
+          message: "Longhorn ingress"
+          detail: "https://{{ longhorn_host }}"
         headers:
           Content-Type: "application/json"
         validate_certs: no
