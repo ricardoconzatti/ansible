@@ -55,4 +55,5 @@
           detail: "storageclass.kubernetes.io/is-default-class: 'true' | k10.kasten.io/is-snapshot-class: 'true'"
         headers:
           Content-Type: "application/json"
+          x-webhook-secret: "{{ webhook_secret }}"
         validate_certs: no
