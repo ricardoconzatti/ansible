@@ -7,11 +7,10 @@
 
   tasks:
 
-    - name: Add kubernetes-dashboard repo
-      shell: helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+    - name: Install Kubernetes Dashboard
+      shell: kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v3.0.0/aio/deploy/recommended.yaml
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
-      ignore_errors: true
 
     - name: Update Helm repos
       shell: helm repo update
