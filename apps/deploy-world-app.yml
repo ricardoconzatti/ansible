@@ -44,6 +44,7 @@
           detail: "https://{{ world_host }}"
         headers:
           Content-Type: "application/json"
+          x-webhook-secret: "{{ webhook_secret }}"
         validate_certs: no
 
     - name: Add demo app (world) to artifact
