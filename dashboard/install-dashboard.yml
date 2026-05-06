@@ -21,7 +21,7 @@
     - name: Install Headlamp
       shell: |
         helm upgrade --install my-headlamp headlamp/headlamp \
-          --namespace kube-system \
+          --namespace headlamp \
           --create-namespace
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
