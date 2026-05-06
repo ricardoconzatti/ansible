@@ -36,6 +36,7 @@
           source: "system"
         headers:
           Content-Type: "application/json"
+          x-webhook-secret: "{{ webhook_secret }}"
         validate_certs: no
 
     - name: Download MinIO Client
@@ -106,6 +107,7 @@
           detail: "Bucket: {{ bucket_name }} | User: {{ user_name }}"
         headers:
           Content-Type: "application/json"
+          x-webhook-secret: "{{ webhook_secret }}"
         validate_certs: no
 
     - name: Create policy
