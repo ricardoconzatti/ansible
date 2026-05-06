@@ -5,8 +5,10 @@ These are a set of Ansible playbooks used to deploy a single-node Kubernetes clu
 - K3s/Kubernetes v1.33
 - Longhorn 1.9.0
 - CSI driver (snapshot controller) 6.2.1
-- Veeam Kasten 8.5.6 (or latest)
-- MinIO 1.4.4 (needs to be deployed in advance)
+- Veeam Kasten 8.5.6
+- MinIO 1.4.4
+
+<sup>New versions may come up as I continue the validation process.</sup>
 
 ## Demo Applications
 - [Homer demo](https://github.com/ricardoconzatti/demo/tree/main/homer-demo): Apache, PHP 8.4, and PostgreSQL 16 database
