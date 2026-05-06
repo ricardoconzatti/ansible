@@ -4,6 +4,7 @@
 
   vars:
     headlamp_host: "dashboard-{{ labid }}.{{ domain }}"
+    use_artifact: "{{ use_artifact | default(false) }}"
 
   tasks:
 
@@ -35,3 +36,25 @@
     - name: Show Headlamp URL
       debug:
         msg: "Headlamp URL: https://{{ headlamp_host }}"
+
+    - name: Log update (site)
+      uri:
+        url: "{{ site_webhook_logs }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          message: "Dashboard ingress"
+          detail: "https://{{ headlamp_host }}"
+        headers:
+          Content-Type: "application/json"
+          x-webhook-secret: "{{ webhook_secret }}"
+        validate_certs: no
+
+    - name: Add Dashboard (ingress) to artifact
+      include_role:
+        name: artifact
+      vars:
+        artifact_section:
+          kasten:
+            url: "https://{{ headlamp_host }}"
