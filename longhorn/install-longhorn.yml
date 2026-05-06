@@ -42,4 +42,5 @@
           detail: "Version: {{ longhorn_version }}"
         headers:
           Content-Type: "application/json"
+          x-webhook-secret: "{{ webhook_secret }}"
         validate_certs: no
