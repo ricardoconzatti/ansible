@@ -18,6 +18,7 @@
           source: "system"
         headers:
           Content-Type: "application/json"
+          x-webhook-secret: "{{ webhook_secret }}"
         validate_certs: no
 
     - name: Apply VolumeSnapshotClass CRD
@@ -51,4 +52,5 @@
           detail: "Version: {{ snapshot_version }}"
         headers:
           Content-Type: "application/json"
+          x-webhook-secret: "{{ webhook_secret }}"
         validate_certs: no
