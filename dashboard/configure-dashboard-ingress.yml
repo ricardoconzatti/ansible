@@ -4,7 +4,6 @@
 
   vars:
     headlamp_host: "dashboard-{{ labid }}.{{ domain }}"
-    use_artifact: "{{ use_artifact | default(false) }}"
 
   tasks:
 
@@ -14,7 +13,7 @@
         apiVersion: networking.k8s.io/v1
         kind: Ingress
         metadata:
-          name: headlamp-ingress
+          name: kube-system
           namespace: headlamp
           annotations:
             traefik.ingress.kubernetes.io/router.entrypoints: web
