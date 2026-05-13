@@ -13,8 +13,8 @@
         apiVersion: networking.k8s.io/v1
         kind: Ingress
         metadata:
-          name: kube-system
-          namespace: headlamp
+          name: headlamp-ingress
+          namespace: kube-system
           annotations:
             traefik.ingress.kubernetes.io/router.entrypoints: web
         spec:
