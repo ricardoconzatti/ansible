@@ -2,9 +2,6 @@
   hosts: kasten-lab
   become: yes
 
-  vars:
-    snapshot_version: v6.2.1
-
   tasks:
 
     - name: Log update (site)
@@ -23,23 +20,23 @@
 
     - name: Apply VolumeSnapshotClass CRD
       shell: >
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ snapshot_version }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ csi_version }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
 
     - name: Apply VolumeSnapshotContent CRD
       shell: >
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ snapshot_version }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ csi_version }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
 
     - name: Apply VolumeSnapshot CRD
       shell: >
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ snapshot_version }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ csi_version }}/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
 
     - name: Apply Snapshot Controller RBAC
       shell: >
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ snapshot_version }}/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ csi_version }}/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
 
     - name: Apply Snapshot Controller Deployment
       shell: >
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ snapshot_version }}/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/{{ csi_version }}/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml
 
     - name: Log update (site)
       uri:
@@ -49,7 +46,7 @@
         body:
           lab_id: "{{ labid }}"
           message: "CSI Snapshot and Controller ready"
-          detail: "Version: {{ snapshot_version }}"
+          detail: "Version: {{ csi_version }}"
         headers:
           Content-Type: "application/json"
           x-webhook-secret: "{{ webhook_secret }}"
