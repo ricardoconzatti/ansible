@@ -69,4 +69,4 @@
           demo_apps:
             homer:
               url: "https://{{ homerdemo_host }}"
-      when: use_artifact
+      when: use_artifact | bool
