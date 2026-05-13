@@ -67,4 +67,3 @@
         artifact_section:
           demo_apps:
             homer:
-      when: use_artifact | bool
