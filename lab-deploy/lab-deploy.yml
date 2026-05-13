@@ -3,7 +3,6 @@
   vars:
     labid: "{{ lookup('env', 'labid') }}"
     recipient_email: "{{ lookup('env', 'recipient_email') }}"
-    use_artifact: true
 
   tasks:
     - name: Register start time
@@ -108,7 +107,6 @@
             id: "{{ labid }}"
             duration_seconds: "{{ lab_duration_seconds }}"
             duration_pretty: "{{ lab_duration_pretty }}"
-      when: use_artifact | default(false)
       run_once: true
 
 # SEND TO N8N
