@@ -14,6 +14,19 @@
         src: "{{ file }}"
       register: artifact_raw
 
+    - name: Send artifact to status page
+      uri:
+        url: "{{ site_webhook_artifact }}"
+        method: POST
+        body_format: json
+        body:
+          lab_id: "{{ labid }}"
+          artifact: "{{ artifact_raw.content | b64decode | from_json }}"
+        headers:
+          Content-Type: "application/json"
+          x-webhook-secret: "{{ webhook_secret }}"
+        validate_certs: no
+
     - name: Download PDF from MinIO (ignore SSL via curl)
       ansible.builtin.command: >
         curl -k -o {{ pdf_file }} {{ pdf_url }}
@@ -46,7 +59,7 @@
         body:
           lab_id: "{{ labid }}"
           message: "✉️ Sending access information email to user"
-          detail: "Check your email for access info and instructions"
+          detail: "Check your email and your lab status page for access info"
           source: "system"
         headers:
           Content-Type: "application/json"
