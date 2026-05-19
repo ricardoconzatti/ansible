@@ -67,3 +67,4 @@
         artifact_section:
           demo_apps:
             homer:
+              url: "https://{{ homerdemo_host }}"
